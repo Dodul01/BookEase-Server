@@ -29,13 +29,21 @@ async function run() {
     // collections
     const database = client.db('BookEase')
     const featuredRoomsCollection = database.collection('featuredRooms')
+    const specialOffersCollection = database.collection('SpecialOffers')
 
     app.get('/featuredRooms', async(req, res)=>{
       const cursor = featuredRoomsCollection.find();
       const result = await cursor.toArray();
-      res.send(result) 
+
+      res.send(result); 
     })
 
+    app.get('/specialOffers', async(req, res)=>{
+      const cursor = specialOffersCollection.find();
+      const result = await cursor.toArray();
+
+      res.send(result);
+    })
 
 
 
