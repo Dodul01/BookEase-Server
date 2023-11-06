@@ -31,6 +31,7 @@ async function run() {
     const featuredRoomsCollection = database.collection('featuredRooms')
     const specialOffersCollection = database.collection('SpecialOffers')
     const roomsCollection = database.collection('rooms');
+    const bookingRoomCollection = database.collection('bookingRoom');
 
     app.get('/featuredRooms', async (req, res) => {
       const cursor = featuredRoomsCollection.find();
@@ -55,12 +56,57 @@ async function run() {
 
     app.get('/rooms/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)};
+      const query = { _id: new ObjectId(id) };
       const room = await roomsCollection.findOne(query);
 
       res.send(room);
     })
 
+
+    app.post('/bookingRoom', async (req, res) => {
+      const getRoom = req.body.room;
+      const bookedRoom = {
+        name: getRoom.name,
+        room_image: getRoom.room_image,
+        description: getRoom.description,
+        price: getRoom.price,
+        room_size: getRoom.room_size,
+        special_offers: getRoom.special_offers,
+        room_rating: getRoom.room_rating,
+        email: req.body.userEmail,
+        bookingDate: req.body.date
+      }
+
+      const addBookedRoom = await bookingRoomCollection.insertOne(bookedRoom);
+      const roomId = req.body.roomId;
+      const newSeatsValue = req.body.newSeatsValue;
+
+      const query = { _id: new ObjectId(roomId) }
+      const options = { upsert: true }
+      const updateRoomSeats = {
+        $set:{
+          name: getRoom.name,
+          description: getRoom.description,
+          price: getRoom.price,
+          room_size: getRoom.room_size,
+          availability: getRoom.availability,
+          room_image: getRoom.room_image,
+          gallery_images: [
+            getRoom.gallery_images[0],
+            getRoom.gallery_images[1],
+            getRoom.gallery_images[2],
+            getRoom.gallery_images[3]
+          ],
+          special_offers: getRoom.special_offers,
+          room_rating: getRoom.room_rating,
+          seats: newSeatsValue
+        }
+      }
+
+      const updateRoom = await roomsCollection.updateOne(query, updateRoomSeats,options)
+      console.log(updateRoom);
+      res.send(updateRoom);
+    })
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
