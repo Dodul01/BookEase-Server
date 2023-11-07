@@ -122,11 +122,27 @@ async function run() {
 
     app.delete('/bookingRoom/:id', async (req, res) => {
       const id = req.params.id;
-      const query = { _id: new ObjectId(id)};
+      const query = { _id: new ObjectId(id) };
       const result = await bookingRoomCollection.deleteOne(query)
       res.send(result);
     })
 
+
+    app.put('/updateBooking/:id', async (req, res) => {
+      const id = req.params.id;
+      const date = req.body.date;
+      const query = {_id: new ObjectId(id)};
+      const options = {upsert: true};
+      const updatedBooking = {
+        $set: {
+          bookingDate: date
+        }
+      }
+
+      const updateBooking = await bookingRoomCollection.updateOne(query, updatedBooking, options);
+
+      res.send(updateBooking)
+    })
 
 
     // Send a ping to confirm a successful connection
