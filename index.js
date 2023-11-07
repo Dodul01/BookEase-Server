@@ -84,7 +84,7 @@ async function run() {
       const query = { _id: new ObjectId(roomId) }
       const options = { upsert: true }
       const updateRoomSeats = {
-        $set:{
+        $set: {
           name: getRoom.name,
           description: getRoom.description,
           price: getRoom.price,
@@ -103,10 +103,31 @@ async function run() {
         }
       }
 
-      const updateRoom = await roomsCollection.updateOne(query, updateRoomSeats,options)
-      console.log(updateRoom);
+      const updateRoom = await roomsCollection.updateOne(query, updateRoomSeats, options);
+
+      // console.log(updateRoom);
       res.send(updateRoom);
     })
+
+
+    app.get('/bookingRoom', async (req, res) => {
+      let query = {}
+      if (req.query?.email) {
+        query = { email: req.query.email }
+      }
+      const userBooking = await bookingRoomCollection.find(query).toArray();
+
+      res.send(userBooking)
+    })
+
+    app.delete('/bookingRoom/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id)};
+      const result = await bookingRoomCollection.deleteOne(query)
+      res.send(result);
+    })
+
+
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
