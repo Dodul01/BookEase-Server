@@ -144,7 +144,19 @@ async function run() {
     })
 
 
-    
+    app.post('/addReview/:id', async (req, res) => {
+      const id = req.params.id;
+      const review = req.body;
+      const query = {_id: new ObjectId(id)};
+      const room = await roomsCollection.findOne(query);
+
+      const result = await roomsCollection.updateOne(
+        query,
+        {$push: { reviews: review }}
+      )
+      console.log(id, room);
+      res.send(result)
+    })
 
 
     // Send a ping to confirm a successful connection
