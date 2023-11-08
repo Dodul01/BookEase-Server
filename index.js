@@ -152,7 +152,7 @@ async function run() {
  
       const result = await roomsCollection.updateOne(
         query,
-        
+        {$push: { reviews: review }}
       )
 
       res.send(result)
