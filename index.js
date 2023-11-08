@@ -105,7 +105,6 @@ async function run() {
 
       const updateRoom = await roomsCollection.updateOne(query, updateRoomSeats, options);
 
-      // console.log(updateRoom);
       res.send(updateRoom);
     })
 
@@ -131,8 +130,8 @@ async function run() {
     app.put('/updateBooking/:id', async (req, res) => {
       const id = req.params.id;
       const date = req.body.date;
-      const query = {_id: new ObjectId(id)};
-      const options = {upsert: true};
+      const query = { _id: new ObjectId(id) };
+      const options = { upsert: true };
       const updatedBooking = {
         $set: {
           bookingDate: date
@@ -143,6 +142,9 @@ async function run() {
 
       res.send(updateBooking)
     })
+
+
+    
 
 
     // Send a ping to confirm a successful connection
