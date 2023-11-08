@@ -149,12 +149,12 @@ async function run() {
       const review = req.body;
       const query = {_id: new ObjectId(id)};
       const room = await roomsCollection.findOne(query);
-
+ 
       const result = await roomsCollection.updateOne(
         query,
-        {$push: { reviews: review }}
+        
       )
-      console.log(id, room);
+
       res.send(result)
     })
 
